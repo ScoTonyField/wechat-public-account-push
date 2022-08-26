@@ -14,7 +14,7 @@ const getAccessToken = async () => {
     const appSecret = config.appSecret
     // accessToken
     let accessToken = null
-    
+
     const postUrl = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appId}&secret=${appSecret}`
 
     try {
@@ -24,7 +24,7 @@ const getAccessToken = async () => {
         } else {
             console.error('请求失败', res.data.errmsg)
         }
-    } catch(e) {
+    } catch (e) {
         console.error('try抛出错误', e)
     }
 
@@ -43,7 +43,7 @@ const getWeather = async (province, city) => {
     }
     const address = cityInfo[province][city]["AREAID"]
 
-    const url = `http://d1.weather.com.cn/dingzhi/${address}.html?_=${new Date()}` 
+    const url = `http://d1.weather.com.cn/dingzhi/${address}.html?_=${new Date()}`
 
     const res = await axios.get(url, {
         headers: {
@@ -60,13 +60,13 @@ const getWeather = async (province, city) => {
             if (weather.weatherinfo) {
                 return weather.weatherinfo
             } else {
-                throw new Error ('找不到weatherinfo属性, 获取失败')
+                throw new Error('找不到weatherinfo属性, 获取失败')
             }
         } else {
             throw new Error(res)
         }
-    } catch(e) {
-        if (e instanceof SyntaxError ) {
+    } catch (e) {
+        if (e instanceof SyntaxError) {
             console.error('序列化错误', e)
         } else {
             console.error(e)
@@ -118,10 +118,10 @@ const getBirthdayMessage = () => {
         let birthdayMessage = null
         // 获取距离下次生日的时间
         const nextBir = dayjs(dayjs().format('YYYY') + '-' + birthday.date).diff(dayjs(), 'day')
-        
+
         if (nextBir === 0) {
             birthdayMessage = `今天是 ${birthday.name} 生日哦，祝${birthday.name}生日快乐！`
-        } else if (nextBir > 0 ) {
+        } else if (nextBir > 0) {
             birthdayMessage = `距离 ${birthday.name} 的生日还有${nextBir}天`
         }
         // 存储数据
@@ -144,14 +144,12 @@ const sendMessage = async (params) => {
         "template_id": config.templateId,
         "url": "http://weixin.qq.com/download",
         "topcolor": "#FF0000",
-        "data": { 
+        "data": {
             "date": {
                 "value": `${dayjs().format('YYYY-MM-DD')} ${week_list[dayjs().format('d')]}`,
-                "color": getColor()
             },
             "city": {
                 "value": params.city,
-                "color": getColor()
             },
             "weather": {
                 "value": params.weather,
@@ -159,27 +157,27 @@ const sendMessage = async (params) => {
             },
             "min_temperature": {
                 "value": params.minTemperature,
-                "color": getColor()
+
             },
             "max_temperature": {
                 "value": params.maxTemperature,
-                "color": getColor()
+
             },
             "love_day": {
                 "value": params.loveDateDiff,
-                "color": getColor()
+
             },
-            "marry_day": {
-                "value": params.marryDateDiff,
-                "color": getColor()
-            },
+            // "marry_day": {
+            //     "value": params.marryDateDiff,
+            //     "color": getColor()
+            // },
             "note_en": {
                 "value": params.en,
-                "color": getColor()
+                // "color": getColor()
             },
             "note_ch": {
                 "value": params.ch,
-                "color": getColor()
+                // "color": getColor()
             }
         }
     }
@@ -217,20 +215,20 @@ const sendMessage = async (params) => {
 
 const main = async () => {
     // 获取accessToken
-    const accessToken =  await getAccessToken()
+    const accessToken = await getAccessToken()
     // 接收的用户
     const users = config.user
     // 传入省份和市获取天气信息
     const province = config.province
     const city = config.city
     // 获取天气
-    const {weather, temp: maxTemperature, tempn: minTemperature} = await getWeather(province, city)
+    const { weather, temp: maxTemperature, tempn: minTemperature } = await getWeather(province, city)
     // 获取金山词霸每日一句
     const { content: ch, note: en } = await getCIBA()
     // 获取在一起的日期差
     const loveDateDiff = dayjs().diff(dayjs(config.loveDate), 'day')
     // 获取结婚的日期差
-    const marryDateDiff = dayjs().diff(dayjs(config.marryDate), 'day')
+    // const marryDateDiff = dayjs().diff(dayjs(config.marryDate), 'day')
     // 获取生日信息
     const birthdayList = getBirthdayMessage()
     // 公众号推送消息
@@ -246,7 +244,7 @@ const main = async () => {
             ch,
             en,
             loveDateDiff,
-            marryDateDiff,
+            // marryDateDiff,
             birthdayList
         })
     })
