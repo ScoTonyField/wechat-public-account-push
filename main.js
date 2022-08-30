@@ -192,7 +192,7 @@ const sendMessage = async (params) => {
     })
     data.data['birthday_message'] = {
         value: birthdayMessage,
-        color: getColor()
+        // color: getColor()
     }
     console.log(data)
 
